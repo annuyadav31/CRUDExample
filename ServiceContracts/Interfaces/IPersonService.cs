@@ -15,9 +15,9 @@ namespace ServiceContracts.Interfaces
         PersonResponse AddPerson(PersonAddRequest personAddRequest);
 
         /// <summary>
-        /// Gets list of all existing persons with PersonResponse Type
+        /// Gets list of all existing persons
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Returns List of personResponse Type</returns>
         List<PersonResponse> GetAllPersonsList();
     }
 }
