@@ -12,7 +12,7 @@ namespace ServiceContracts.Interfaces
         /// </summary>
         /// <param name="personAddRequest">object to add</param>
         /// <returns>Returns generated PersonResponse</returns>
-        PersonResponse AddPerson(PersonAddRequest personAddRequest);
+        PersonResponse AddPerson(PersonAddRequest? personAddRequest);
 
         /// <summary>
         /// Gets list of all existing persons

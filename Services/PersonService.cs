@@ -5,7 +5,7 @@ namespace Services
 {
     public class PersonService : IPersonService
     {
-        public PersonResponse AddPerson(PersonAddRequest personAddRequest)
+        public PersonResponse AddPerson(PersonAddRequest? personAddRequest)
         {
             throw new NotImplementedException();
         }
