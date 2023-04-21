@@ -17,7 +17,14 @@ namespace ServiceContracts.Interfaces
         /// <summary>
         /// Gets the all countries
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Returns all the countries present in the list with Guid id</returns>
         List<CountryResponse> GetCountryList();
+
+        /// <summary>
+        /// Gets the details of a particular country id
+        /// </summary>
+        /// <param name="countryId"></param>
+        /// <returns>Returns the details of a particular id</returns>
+        CountryResponse GetCountryById(Guid? countryId);
     }
 }

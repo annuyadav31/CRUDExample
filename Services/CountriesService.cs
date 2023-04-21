@@ -59,6 +59,19 @@ namespace Services
 
         }
 
+        public CountryResponse GetCountryById(Guid? countryId)
+        {
+            if(countryId == null)
+            {
+                throw new ArgumentException(nameof(countryId));
+            }
+
+            Country? countryDetails =  _countries.Where(x => x.CountryId == countryId).FirstOrDefault();
+
+            if (countryDetails == null) { return null; }
+
+            return countryDetails.ToCountryResponse();
+        }
 
         public List<CountryResponse> GetCountryList()
         {

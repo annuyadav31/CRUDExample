@@ -120,5 +120,51 @@ namespace Tests
             }
         }
         #endregion
+
+        #region "GetCountryByIdTest"
+        [Fact]
+        public void GetCountryById_CountryIdIsNull()
+        {
+            //Arrange
+            Guid? countryId = null;
+
+            //Assert
+            Assert.Throws<ArgumentException>(()=>
+            {
+                //Act
+                _countriesService.GetCountryById(countryId);
+            });
+        }
+
+        [Fact]
+        public void GetCountryById_CountryIdNotFound()
+        {
+            //Arrange
+            Guid countryId = Guid.NewGuid();
+            CountryResponse? expectedCountryResponse = null;
+
+            //Act
+            CountryResponse actualCountryResponse = _countriesService.GetCountryById(countryId);
+
+            //Assert
+            Assert.Equal(expectedCountryResponse, actualCountryResponse);
+        }
+
+        [Fact]
+        public void GetCountryById_CountryIdFound()
+        {
+            //Arrange
+            CountryAddRequest countryAddRequest = new CountryAddRequest() { CountryName = "UK" };
+            CountryResponse countryResponse_from_add = _countriesService.AddCountry(countryAddRequest);
+
+            //Act
+            CountryResponse countryResponse_from_Method = _countriesService.GetCountryById(countryResponse_from_add.CountryId);
+
+            //Assert
+            Assert.Equal(countryResponse_from_add, countryResponse_from_Method);
+
+        }
+
+        #endregion
     }
 }

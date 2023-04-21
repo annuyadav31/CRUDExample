@@ -20,6 +20,11 @@ namespace ServiceContracts.ModelDTO
             CountryResponse country_to_compare = (CountryResponse)obj;
             return CountryId == country_to_compare.CountryId && CountryName == country_to_compare.CountryName;
         }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 
     public static class CountryExtensions
