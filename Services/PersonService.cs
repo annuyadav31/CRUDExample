@@ -1,6 +1,8 @@
 ﻿using Entities;
 using ServiceContracts.Interfaces;
 using ServiceContracts.ModelDTO;
+using Services.Helpers;
+using System.ComponentModel.DataAnnotations;
 
 namespace Services
 {
@@ -28,9 +30,8 @@ namespace Services
             if(personAddRequest == null)
             { throw new ArgumentNullException(nameof(personAddRequest));}
 
-            //Check if "personName" is not null
-            if(personAddRequest.PersonName == null)
-            { throw new ArgumentException(nameof(personAddRequest.PersonName));}
+            //Model Validations
+            ValidationHelper.ModelValidation(personAddRequest);
 
             //Convert personAddRequest to person type obect
             Person person = personAddRequest.ToPerson();

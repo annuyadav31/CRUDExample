@@ -1,5 +1,6 @@
 ﻿using Entities;
 using ServiceContracts.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace ServiceContracts.ModelDTO
 {
@@ -8,12 +9,25 @@ namespace ServiceContracts.ModelDTO
     /// </summary>
     public class PersonAddRequest
     {
+        [Required(ErrorMessage ="PersonName is required")]
         public string? PersonName { get; set; }
+
+        [Required(ErrorMessage ="Email is required")]
+        [EmailAddress(ErrorMessage ="Please enter correct email pattern")]
         public string? Email { get; set; }
+
+        [Required(ErrorMessage ="DateOfBirth is required")]
         public DateTime? DateOfBirth { get; set; }
+
+        [Required(ErrorMessage ="Gender is required")]
         public GenderOptions? Gender { get; set; }
+
+        [Required(ErrorMessage ="CountryId is required")]
         public Guid? CountryId { get; set; }
+
+        [Required(ErrorMessage ="Address is required")]
         public string? Address { get; set; }
+
         public bool ReceiveNewsLetters { get; set; }
 
         public Person ToPerson()
