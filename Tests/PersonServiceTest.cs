@@ -2,19 +2,22 @@
 using ServiceContracts.ModelDTO;
 using Services;
 using ServiceContracts.Enums;
+using Xunit.Abstractions;
 
 namespace Tests
 {
     public class PersonServiceTest
     {
-        //private readonly variable for Person Service Interface
+        //private readonly variable for Service Interface
         private readonly IPersonService _personService;
         private readonly ICountriesService _countriesService;
+        private readonly ITestOutputHelper _testOutputHelper;
 
-        public PersonServiceTest() 
+        public PersonServiceTest(ITestOutputHelper testOutputHelper) 
         {
             _personService = new PersonService();
             _countriesService = new CountriesService();
+            _testOutputHelper = testOutputHelper;
         }
 
         #region "AddPersonTests"
@@ -123,7 +126,21 @@ namespace Tests
                expectedPersonResponses.Add(_personService.AddPerson(personAddRequest));
             }
 
+            //print expectedOutput Result using testOutputHelper
+            _testOutputHelper.WriteLine("Expected:");
+            foreach(PersonResponse personResponse in expectedPersonResponses)
+            {
+                _testOutputHelper.WriteLine(personResponse.ToString());
+            }
+
             List<PersonResponse> actualPersonResponseList = _personService.GetAllPersonsList();
+
+            //print actualOutput Result using testOutputHelper
+            _testOutputHelper.WriteLine("Actual:");
+            foreach(PersonResponse personResponse in actualPersonResponseList)
+            {
+                _testOutputHelper.WriteLine(personResponse.ToString());
+            }
 
             //Assert
             foreach(PersonResponse expectedResponse in expectedPersonResponses)
