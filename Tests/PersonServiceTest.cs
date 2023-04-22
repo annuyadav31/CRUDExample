@@ -1,6 +1,4 @@
-﻿using Entities;
-
-namespace Tests
+﻿namespace Tests
 {
     public class PersonServiceTest
     {
@@ -17,6 +15,60 @@ namespace Tests
             _personService = new PersonService();
             _countriesService = new CountriesService();
             _testOutputHelper = testOutputHelper;
+        }
+        #endregion
+
+        #region "Common private method"
+        private List<PersonResponse> AddFewPersonsToList()
+        {
+            CountryAddRequest countryAddRequest1 = new CountryAddRequest() { CountryName = "UK" };
+            CountryAddRequest countryAddRequest2 = new CountryAddRequest() { CountryName = "India" };
+
+            CountryResponse countryResponse1 = _countriesService.AddCountry(countryAddRequest1);
+            CountryResponse countryResponse2 = _countriesService.AddCountry(countryAddRequest2);
+
+            List<PersonAddRequest> personAddRequests = new List<PersonAddRequest>
+            {   new PersonAddRequest(){   PersonName = "Mary",
+                Email = "Test1@example.com",
+                DateOfBirth = DateTime.Parse("2000-10-10"),
+                Address = "Test1Address",
+                CountryId = countryResponse1.CountryId,
+                Gender = GenderOptions.Female,
+                ReceiveNewsLetters = true },
+
+                new PersonAddRequest() {  PersonName = "Rehman",
+                Email = "Test2@example.com",
+                DateOfBirth = DateTime.Parse("2000-10-10"),
+                Address = "Test2Address",
+                CountryId = countryResponse2.CountryId,
+                Gender = GenderOptions.Male,
+                ReceiveNewsLetters = false},
+
+                new PersonAddRequest() {  PersonName = "Bhupesh",
+                Email = "Test2@example.com",
+                DateOfBirth = DateTime.Parse("2000-10-10"),
+                Address = "Test2Address",
+                CountryId = countryResponse2.CountryId,
+                Gender = GenderOptions.Male,
+                ReceiveNewsLetters = false},
+            };
+
+            List<PersonResponse> expectedPersonResponses = new List<PersonResponse>();
+
+            //Act
+            foreach (PersonAddRequest personAddRequest in personAddRequests)
+            {
+                expectedPersonResponses.Add(_personService.AddPerson(personAddRequest));
+            }
+
+            //print input
+            _testOutputHelper.WriteLine("Input:");
+            foreach (PersonResponse personResponse in expectedPersonResponses)
+            {
+                _testOutputHelper.WriteLine(personResponse.ToString());
+            }
+
+            return expectedPersonResponses;
         }
         #endregion
 
@@ -251,16 +303,30 @@ namespace Tests
         {
 
             //Arrange
-            List<PersonResponse> expectedPersonResponses = AddFewPersonsToList();
+            List<PersonResponse> personResponsesFromAdd = AddFewPersonsToList();
+            List<PersonResponse> expectedPersonReponseAfterSearch = new List<PersonResponse>();
+            string? searchString = "ma";
+
+            //ExpectedList
+            foreach (PersonResponse personResponse in personResponsesFromAdd)
+            {
+                if (personResponse.PersonName != null)
+                {
+                    if (personResponse.PersonName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                    {
+                        expectedPersonReponseAfterSearch.Add(personResponse);
+                    }
+                }
+            }
 
             //print expectedOutput Result using testOutputHelper
             _testOutputHelper.WriteLine("Expected:");
-            foreach (PersonResponse personResponse in expectedPersonResponses)
+            foreach (PersonResponse personResponse in expectedPersonReponseAfterSearch)
             {
                 _testOutputHelper.WriteLine(personResponse.ToString());
             }
 
-            List<PersonResponse> actualPersonResponseList = _personService.GetFilteredList(nameof(Person.PersonName), "ma");
+            List<PersonResponse> actualPersonResponseList = _personService.GetFilteredList(nameof(Person.PersonName), searchString);
 
             //print actualOutput Result using testOutputHelper
             _testOutputHelper.WriteLine("Actual:");
@@ -270,62 +336,50 @@ namespace Tests
             }
 
             //Assert
-            foreach (PersonResponse expectedResponse in expectedPersonResponses)
+            for (int i = 0; i < expectedPersonReponseAfterSearch.Count; i++)
             {
-                if(expectedResponse.PersonName != null) 
-                {
-                    if (expectedResponse.PersonName.Contains("ma", StringComparison.OrdinalIgnoreCase))
-                    { Assert.Contains(expectedResponse, actualPersonResponseList); }
-                }              
+                Assert.Equal(expectedPersonReponseAfterSearch[i], actualPersonResponseList[i]);
             }
         }
 
         #endregion
 
-
-        private List<PersonResponse> AddFewPersonsToList()
+        #region "GetSortedPersonsListTests"
+        //When we sort based on personName in DESC , it should return persons List in descending on personName
+        [Fact]
+        public void GetSortedPersonsList_SearchByPersonNameDesc()
         {
-            CountryAddRequest countryAddRequest1 = new CountryAddRequest() { CountryName = "UK" };
-            CountryAddRequest countryAddRequest2 = new CountryAddRequest() { CountryName = "India" };
+
+            //Arrange
+            List<PersonResponse> personResponses_from_add = AddFewPersonsToList();
             
-            CountryResponse countryResponse1 = _countriesService.AddCountry(countryAddRequest1);
-            CountryResponse countryResponse2 = _countriesService.AddCountry(countryAddRequest2);
+            //ExpectedSortedList by Desc order
+            List<PersonResponse> expectedPersonListAfterSort = personResponses_from_add.OrderByDescending(temp=>temp.PersonName).ToList();
 
-            List<PersonAddRequest> personAddRequests = new List<PersonAddRequest>
-            {   new PersonAddRequest(){   PersonName = "Mary",
-                Email = "Test1@example.com",
-                DateOfBirth = DateTime.Parse("2000-10-10"),
-                Address = "Test1Address",
-                CountryId = countryResponse1.CountryId,
-                Gender = GenderOptions.Female,
-                ReceiveNewsLetters = true },
-
-                new PersonAddRequest() {  PersonName = "Rehman",
-                Email = "Test2@example.com",
-                DateOfBirth = DateTime.Parse("2000-10-10"),
-                Address = "Test2Address",
-                CountryId = countryResponse2.CountryId,
-                Gender = GenderOptions.Male,
-                ReceiveNewsLetters = false},
-
-                new PersonAddRequest() {  PersonName = "Bhupesh",
-                Email = "Test2@example.com",
-                DateOfBirth = DateTime.Parse("2000-10-10"),
-                Address = "Test2Address",
-                CountryId = countryResponse2.CountryId,
-                Gender = GenderOptions.Male,
-                ReceiveNewsLetters = false},
-            };
-
-            List<PersonResponse> expectedPersonResponses = new List<PersonResponse>();
-
-            //Act
-            foreach (PersonAddRequest personAddRequest in personAddRequests)
+            _testOutputHelper.WriteLine("Expected:");
+            foreach(PersonResponse personResponse in expectedPersonListAfterSort)
             {
-                expectedPersonResponses.Add(_personService.AddPerson(personAddRequest));
+                _testOutputHelper.WriteLine(personResponse.ToString());
             }
 
-            return expectedPersonResponses;
+            //Act
+            List<PersonResponse> allPersons = _personService.GetAllPersonsList();
+            List<PersonResponse> actualPersonListAfterSort = _personService.GetSortedPersons(allPersons,nameof(Person.PersonName), SortOrderOptions.DESC);
+
+            //print actualOutput Result using testOutputHelper
+            _testOutputHelper.WriteLine("Actual:");
+            foreach (PersonResponse personResponse in actualPersonListAfterSort)
+            {
+                _testOutputHelper.WriteLine(personResponse.ToString());
+            }
+
+            //Assert
+            for(int i=0; i<expectedPersonListAfterSort.Count;i++)
+            {
+                Assert.Equal(expectedPersonListAfterSort[i], actualPersonListAfterSort[i]);
+            }
         }
+
+        #endregion
     }
 }
