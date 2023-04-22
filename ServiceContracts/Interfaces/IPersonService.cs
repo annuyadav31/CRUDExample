@@ -26,10 +26,10 @@
         PersonResponse GetPersonById(Guid? personId);
 
         /// <summary>
-        /// Gets the filtered list based on searchBy and searchString parameter
+        /// Gets the filtered list that matches with the search field and search string
         /// </summary>
-        /// <param name="searchBy"></param>
-        /// <param name="searchString"></param>
+        /// <param name="searchBy">Search Field To Search</param>
+        /// <param name="searchString">Search string to search</param>
         /// <returns>Returns the matching records in PersonResponse list.</returns>
         List<PersonResponse> GetFilteredList(string searchBy, string? searchString);
     }
