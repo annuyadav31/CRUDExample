@@ -1,7 +1,4 @@
-﻿using Entities;
-using ServiceContracts.Enums;
-
-namespace ServiceContracts.ModelDTO
+﻿namespace ServiceContracts.ModelDTO
 {
     /// <summary>
     /// Represents DTO model class that is used as a return type of most of the methods of person service
@@ -51,6 +48,21 @@ namespace ServiceContracts.ModelDTO
         {
             return $"Person ID: {PersonId}, Person Name: {PersonName}, Email: {Email}, DateOfBirth:{DateOfBirth?.ToString("dd-mm-yyyy")}, Gender : {Gender}," +
                 $"CountryId: {CountryId},Country:{Country}, Address:{Address},RecieveNewsLetter:{ReceiveNewsLetters}";
+        }
+
+        public PersonUpdateRequest ToPersonUpdateRequest()
+        {
+            return new PersonUpdateRequest()
+            {
+                PersonId = PersonId,
+                PersonName = PersonName,
+                Email = Email,
+                DateOfBirth = DateOfBirth,
+                Gender = (GenderOptions)Enum.Parse(typeof(GenderOptions), Gender, true),
+                Address = Address,
+                CountryId = CountryId,
+                ReceiveNewsLetters = ReceiveNewsLetters
+            };
         }
     }
 

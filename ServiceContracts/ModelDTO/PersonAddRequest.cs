@@ -1,8 +1,4 @@
-﻿using Entities;
-using ServiceContracts.Enums;
-using System.ComponentModel.DataAnnotations;
-
-namespace ServiceContracts.ModelDTO
+﻿namespace ServiceContracts.ModelDTO
 {
     /// <summary>
     /// Acts as a DTO for inserting new person

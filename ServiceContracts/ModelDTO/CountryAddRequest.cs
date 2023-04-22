@@ -1,6 +1,4 @@
-﻿using Entities;
-
-namespace ServiceContracts.ModelDTO
+﻿namespace ServiceContracts.ModelDTO
 {
     /// <summary>
     /// DTO Class that is used to add country details
