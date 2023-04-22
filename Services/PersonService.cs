@@ -2,7 +2,6 @@
 using ServiceContracts.Interfaces;
 using ServiceContracts.ModelDTO;
 using Services.Helpers;
-using System.ComponentModel.DataAnnotations;
 
 namespace Services
 {

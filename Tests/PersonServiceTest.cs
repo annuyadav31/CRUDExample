@@ -1,24 +1,22 @@
-﻿using ServiceContracts.Interfaces;
-using ServiceContracts.ModelDTO;
-using Services;
-using ServiceContracts.Enums;
-using Xunit.Abstractions;
-
-namespace Tests
+﻿namespace Tests
 {
     public class PersonServiceTest
     {
+        #region "Readonly fields"
         //private readonly variable for Service Interface
         private readonly IPersonService _personService;
         private readonly ICountriesService _countriesService;
         private readonly ITestOutputHelper _testOutputHelper;
+        #endregion
 
+        #region "Constructor"
         public PersonServiceTest(ITestOutputHelper testOutputHelper) 
         {
             _personService = new PersonService();
             _countriesService = new CountriesService();
             _testOutputHelper = testOutputHelper;
         }
+        #endregion
 
         #region "AddPersonTests"
 
@@ -149,7 +147,6 @@ namespace Tests
             }
         }
         #endregion
-
 
         #region "GetPersonByIdTests"
 

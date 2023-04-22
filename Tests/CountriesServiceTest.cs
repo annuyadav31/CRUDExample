@@ -1,19 +1,19 @@
-using ServiceContracts.Interfaces;
-using ServiceContracts.ModelDTO;
-using Services;
-
 namespace Tests
 {
     public class CountriesServiceTest
     {
-        //private readonly class to hold ICountriesService
+        #region "readonly fields"
+        //private readonly class to hold Services
         private readonly ICountriesService _countriesService;
+        #endregion
 
+        #region "Constructor"
         //constructor to create CountriesService Object
         public CountriesServiceTest()
         {
             _countriesService = new CountriesService();
         }
+        #endregion
 
         #region "AddCountryTest"
         //when CountryAddRequest is null, it should return ArgumentNullException
