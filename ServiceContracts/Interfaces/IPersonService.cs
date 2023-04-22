@@ -41,5 +41,12 @@
         /// <param name="sortOrder">ASC or DESC</param>
         /// <returns>Returns sorted persons as PersonResponse list</returns>
         List<PersonResponse> GetSortedPersons(List<PersonResponse> allPersons, string sortBy, SortOrderOptions sortOrder);
+
+        /// <summary>
+        /// Update the person detail based on personId
+        /// </summary>
+        /// <param name="personUpdateRequest">Model details to update</param>
+        /// <returns>Returns the updated personResponse</returns>
+        PersonResponse UpdatePerson(PersonUpdateRequest personUpdateRequest);
     }
 }

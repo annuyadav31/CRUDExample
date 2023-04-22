@@ -416,5 +416,67 @@
         }
 
         #endregion
+
+        #region "UpdatePersonTests"
+        //when we supply null as PersonUpdateRequest, it should throw ArgumentNullException
+        [Fact]
+        public void UpdatePerson_PersonUpdateRequestIsNull()
+        {
+            //Arrange
+            PersonUpdateRequest? personUpdateRequest = null;
+
+            //Assert
+            Assert.Throws<ArgumentNullException>(() => {
+                //Act
+                _personService.UpdatePerson(personUpdateRequest);
+            });
+        }
+
+        //When we supply correct personDetails, it should update the model
+        [Fact]
+        public void UpdatePerson_PersonUpdateRequestIsCorrect()
+        {
+            //Arrange 
+
+            //Adding Country
+            CountryAddRequest countryAddRequest = new CountryAddRequest() { CountryName = "UK" };
+            CountryResponse countryResponse =_countriesService.AddCountry(countryAddRequest);
+
+            //Adding Person
+            PersonAddRequest personAddRequest = new PersonAddRequest()
+            {
+                PersonName = "Test1",
+                Email = "Test1@example.com",
+                DateOfBirth = DateTime.Parse("2000-10-10"),
+                Address = "TestAddress",
+                CountryId = countryResponse.CountryId,
+                Gender = GenderOptions.Male,
+                ReceiveNewsLetters = true
+            }; 
+            PersonResponse personResponse = _personService.AddPerson(personAddRequest);
+
+            //Update Person Model
+            PersonUpdateRequest personUpdateRequest = new PersonUpdateRequest()
+            {
+                PersonId = personResponse.PersonId,
+                PersonName = "Test2",
+                Email = "Test2@example.com",
+                DateOfBirth = DateTime.Parse("2000-10-10"),
+                Address = "TestAddress",
+                CountryId = countryResponse.CountryId,
+                Gender = GenderOptions.Male,
+                ReceiveNewsLetters = true
+            };
+
+            //Act
+            PersonResponse personResponseAfterUpdate = _personService.UpdatePerson(personUpdateRequest);
+            PersonResponse personResponseFromId = _personService.GetPersonById(personResponse.PersonId);
+
+            //Assert
+            Assert.Equal(personResponseAfterUpdate, personResponseFromId);
+
+
+        }
+        #endregion
     }
 }
