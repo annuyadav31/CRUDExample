@@ -347,7 +347,7 @@
         #region "GetSortedPersonsListTests"
         //When we sort based on personName in DESC , it should return persons List in descending on personName
         [Fact]
-        public void GetSortedPersonsList_SearchByPersonNameDesc()
+        public void GetSortedPersonsList_SortByPersonNameDesc()
         {
 
             //Arrange
@@ -375,6 +375,41 @@
 
             //Assert
             for(int i=0; i<expectedPersonListAfterSort.Count;i++)
+            {
+                Assert.Equal(expectedPersonListAfterSort[i], actualPersonListAfterSort[i]);
+            }
+        }
+
+        //When we sort based on personName in ASC , it should return persons List in descending on personName
+        [Fact]
+        public void GetSortedPersonsList_SortByPersonNameASC()
+        {
+
+            //Arrange
+            List<PersonResponse> personResponses_from_add = AddFewPersonsToList();
+
+            //ExpectedSortedList by Desc order
+            List<PersonResponse> expectedPersonListAfterSort = personResponses_from_add.OrderBy(temp => temp.PersonName).ToList();
+
+            _testOutputHelper.WriteLine("Expected:");
+            foreach (PersonResponse personResponse in expectedPersonListAfterSort)
+            {
+                _testOutputHelper.WriteLine(personResponse.ToString());
+            }
+
+            //Act
+            List<PersonResponse> allPersons = _personService.GetAllPersonsList();
+            List<PersonResponse> actualPersonListAfterSort = _personService.GetSortedPersons(allPersons, nameof(Person.PersonName), SortOrderOptions.ASC);
+
+            //print actualOutput Result using testOutputHelper
+            _testOutputHelper.WriteLine("Actual:");
+            foreach (PersonResponse personResponse in actualPersonListAfterSort)
+            {
+                _testOutputHelper.WriteLine(personResponse.ToString());
+            }
+
+            //Assert
+            for (int i = 0; i < expectedPersonListAfterSort.Count; i++)
             {
                 Assert.Equal(expectedPersonListAfterSort[i], actualPersonListAfterSort[i]);
             }
