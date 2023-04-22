@@ -61,5 +61,10 @@
             return personResponse.ToPersonResponse();
             
         }
+
+        public List<PersonResponse> GetFilteredList(string searchBy, string? searchString)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
