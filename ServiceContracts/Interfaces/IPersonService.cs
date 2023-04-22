@@ -32,5 +32,14 @@
         /// <param name="searchString">Search string to search</param>
         /// <returns>Returns the matching records in PersonResponse list.</returns>
         List<PersonResponse> GetFilteredList(string searchBy, string? searchString);
+
+        /// <summary>
+        /// Returns sorted list of persons
+        /// </summary>
+        /// <param name="allPersons">Reprsents list of persons to sort</param>
+        /// <param name="sortBy">Name of the property (key) , based on which the person should be sorted</param>
+        /// <param name="sortOrder">ASC or DESC</param>
+        /// <returns>Returns sorted persons as PersonResponse list</returns>
+        List<PersonResponse> GetSortedPersons(List<PersonResponse> allPersons, string sortBy, SortOrderOptions sortOrder);
     }
 }

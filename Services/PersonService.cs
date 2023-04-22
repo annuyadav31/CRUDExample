@@ -1,4 +1,6 @@
-﻿namespace Services
+﻿using ServiceContracts.Enums;
+
+namespace Services
 {
     public class PersonService : IPersonService
     {
@@ -100,6 +102,11 @@
                     break;
             }
             return matchingPersons;
+        }
+
+        public List<PersonResponse> GetSortedPersons(List<PersonResponse> allPersons, string sortBy, SortOrderOptions sortOrder)
+        {
+            throw new NotImplementedException();
         }
     }
 }
