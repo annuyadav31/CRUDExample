@@ -1,6 +1,4 @@
-﻿using ServiceContracts.ModelDTO;
-
-namespace ServiceContracts.Interfaces
+﻿namespace ServiceContracts.Interfaces
 {
     /// <summary>
     /// Represents business logic for manipulating Country entity

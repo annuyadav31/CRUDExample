@@ -1,6 +1,4 @@
-﻿using ServiceContracts.ModelDTO;
-
-namespace ServiceContracts.Interfaces
+﻿namespace ServiceContracts.Interfaces
 {
     /// <summary>
     /// Reprsents business logic for manipulating person entity
@@ -26,5 +24,13 @@ namespace ServiceContracts.Interfaces
         /// <param name="personId">PersonId is used to retrieve the person details</param>
         /// <returns>Returns the person details as personResponse</returns>
         PersonResponse GetPersonById(Guid? personId);
+
+        /// <summary>
+        /// Gets the filtered list based on searchBy and searchString parameter
+        /// </summary>
+        /// <param name="searchBy"></param>
+        /// <param name="searchString"></param>
+        /// <returns>Returns the matching records in PersonResponse list.</returns>
+        List<PersonResponse> GetFilteredList(string searchBy, string? searchString);
     }
 }

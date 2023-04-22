@@ -1,9 +1,4 @@
-﻿using Entities;
-using ServiceContracts.Interfaces;
-using ServiceContracts.ModelDTO;
-using Services.Helpers;
-
-namespace Services
+﻿namespace Services
 {
     public class PersonService : IPersonService
     {

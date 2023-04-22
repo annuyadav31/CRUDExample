@@ -1,8 +1,4 @@
-﻿using Entities;
-using ServiceContracts.Interfaces;
-using ServiceContracts.ModelDTO;
-
-namespace Services
+﻿namespace Services
 {
     public class CountriesService : ICountriesService
     {
