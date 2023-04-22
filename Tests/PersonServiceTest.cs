@@ -74,5 +74,59 @@ namespace Tests
         }
         #endregion
 
+        #region "GetPersonListTests"
+
+        //When PersonList is empty
+        [Fact]
+        public void GetAllPersonsList_EmptyList()
+        {
+            //Act
+            List<PersonResponse> personResponses = _personService.GetAllPersonsList();
+
+            //Assert
+            Assert.Empty(personResponses);
+        }
+
+        //When we have added few persons to the list
+        [Fact]
+        public void GetAllPersonsList_AddFewPersonsList()
+        {
+            
+            //Arrange
+            List<PersonAddRequest> personAddRequests = new List<PersonAddRequest>
+            { new PersonAddRequest(){   PersonName = "Test1",
+                Email = "Test1@example.com",
+                DateOfBirth = DateTime.Parse("2000-10-10"),
+                Address = "Test1Address",
+                CountryId = Guid.NewGuid(),
+                Gender = GenderOptions.Male,
+                ReceiveNewsLetters = true },
+                new PersonAddRequest() {  PersonName = "Test2",
+                Email = "Test2@example.com",
+                DateOfBirth = DateTime.Parse("2000-10-10"),
+                Address = "Test2Address",
+                CountryId = Guid.NewGuid(),
+                Gender = GenderOptions.Female,
+                ReceiveNewsLetters = false}
+            };
+
+            List<PersonResponse> expectedPersonResponses = new List<PersonResponse>();
+
+            //Act
+            foreach(PersonAddRequest personAddRequest in personAddRequests)
+            {
+               expectedPersonResponses.Add(_personService.AddPerson(personAddRequest));
+            }
+
+            List<PersonResponse> actualPersonResponseList = _personService.GetAllPersonsList();
+
+            //Assert
+            foreach(PersonResponse expectedResponse in expectedPersonResponses)
+            {
+                Assert.Contains(expectedResponse, actualPersonResponseList);
+            }
+        }
+        #endregion
+
     }
 }
