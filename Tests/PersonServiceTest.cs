@@ -93,21 +93,24 @@ namespace Tests
         [Fact]
         public void GetAllPersonsList_AddFewPersonsList()
         {
-            
+
             //Arrange
+            CountryAddRequest countryAddRequest = new CountryAddRequest() { CountryName = "UK" };
+            CountryResponse countryResponse = _countriesService.AddCountry(countryAddRequest);
+
             List<PersonAddRequest> personAddRequests = new List<PersonAddRequest>
             { new PersonAddRequest(){   PersonName = "Test1",
                 Email = "Test1@example.com",
                 DateOfBirth = DateTime.Parse("2000-10-10"),
                 Address = "Test1Address",
-                CountryId = Guid.NewGuid(),
+                CountryId = countryResponse.CountryId,
                 Gender = GenderOptions.Male,
                 ReceiveNewsLetters = true },
                 new PersonAddRequest() {  PersonName = "Test2",
                 Email = "Test2@example.com",
                 DateOfBirth = DateTime.Parse("2000-10-10"),
                 Address = "Test2Address",
-                CountryId = Guid.NewGuid(),
+                CountryId = countryResponse.CountryId,
                 Gender = GenderOptions.Female,
                 ReceiveNewsLetters = false}
             };
