@@ -19,5 +19,12 @@ namespace ServiceContracts.Interfaces
         /// </summary>
         /// <returns>Returns List of personResponse Type</returns>
         List<PersonResponse> GetAllPersonsList();
+
+        /// <summary>
+        /// Gets the person details by personId
+        /// </summary>
+        /// <param name="personId">PersonId is used to retrieve the person details</param>
+        /// <returns>Returns the person details as personResponse</returns>
+        PersonResponse GetPersonById(Guid? personId);
     }
 }

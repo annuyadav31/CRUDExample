@@ -51,5 +51,9 @@ namespace Services
             return _people.Select(temp=>temp.ToPersonResponse()).ToList();
         }
 
+        public PersonResponse GetPersonById(Guid? personId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
