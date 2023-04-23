@@ -477,5 +477,40 @@
 
         }
         #endregion
+
+        #region "DeletePersonTests"
+
+        //if you supply a invalid personId, it should return false
+        [Fact]
+        public void DeletePerson_personIdIsInvalid()
+        {
+            //Arrange
+            Guid personIdToDelete = Guid.NewGuid();
+
+            //Act
+            bool isDeleted = _personService.DeletePerson(personIdToDelete);
+
+            //Assert
+            Assert.False(isDeleted);
+        }
+
+        //if you supply valid personId, the isDeleted should be true
+        [Fact]
+        public void DeletePerson_personIdIsValid()
+        {
+            //Arrange
+            List<PersonResponse> personResponsesFromAdd = AddFewPersonsToList();
+            Guid personIdToDelete = personResponsesFromAdd.First().PersonId;
+
+            //Act
+            bool isDeleted = _personService.DeletePerson(personIdToDelete);
+
+            //Assert
+            Assert.True(isDeleted);
+        }
+
+
+        #endregion
+
     }
 }
