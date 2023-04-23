@@ -48,5 +48,12 @@
         /// <param name="personUpdateRequest">Model details to update</param>
         /// <returns>Returns the updated personResponse</returns>
         PersonResponse UpdatePerson(PersonUpdateRequest personUpdateRequest);
+
+        /// <summary>
+        /// Delete the person with the given personId
+        /// </summary>
+        /// <param name="personId">parameter used to delete the person</param>
+        /// <returns>returns true or false</returns>
+        bool DeletePerson(Guid? personId);
     }
 }
