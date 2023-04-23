@@ -11,7 +11,7 @@ namespace Tests
         //constructor to create CountriesService Object
         public CountriesServiceTest()
         {
-            _countriesService = new CountriesService();
+            _countriesService = new CountriesService(false);
         }
         #endregion
 
