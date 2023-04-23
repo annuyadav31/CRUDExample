@@ -475,7 +475,6 @@
             //Assert
             Assert.Equal(personResponseAfterUpdate, personResponseFromId);
 
-
         }
         #endregion
     }
