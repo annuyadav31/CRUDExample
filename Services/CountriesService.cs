@@ -16,8 +16,6 @@
                 new Country() { CountryId = Guid.Parse("EE06A028-565B-4510-A072-76772D17213D"),CountryName="UK"},
                 new Country() { CountryId = Guid.Parse("A923BCEA-E339-4DA9-A13B-0FF1EBDE8E72"), CountryName = "INDIA" },
                 new Country() { CountryId = Guid.Parse("B00278A7-1F91-4042-B2A6-AA09F7AAD8DE"), CountryName = "JAPAN" },
-                new Country() { CountryId = Guid.Parse("19D15CFB-2C97-481C-9437-D91A3148FE71"), CountryName = "US" },
-                new Country() { CountryId = Guid.Parse("1B2B2F83-D565-4BA3-8F84-017912592673"), CountryName = "CHINA" },
                 });               
             }
         }
