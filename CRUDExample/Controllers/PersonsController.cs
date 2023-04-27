@@ -8,41 +8,38 @@ namespace CRUDExample.Controllers
 {
     public class PersonsController : Controller
     {
-        //private readOnly field
-        private readonly IPersonService _personService;
+        private readonly IPersonService _personsService;
 
-        public PersonsController(IPersonService personService)
+        //constructor
+        public PersonsController(IPersonService personsService)
         {
-            _personService = personService;
+            _personsService = personsService;
         }
 
-        [Route("/")]
         [Route("persons/index")]
+        [Route("/")]
         public IActionResult Index(string searchBy, string? searchString, string sortBy = nameof(PersonResponse.PersonName), SortOrderOptions sortOrder = SortOrderOptions.ASC)
         {
-            #region "Searching"
+            //Search
             ViewBag.SearchFields = new Dictionary<string, string>()
-            {
-                { nameof(PersonResponse.PersonName),"Person Name" },
-                { nameof(PersonResponse.Email),"Email" },
-                { nameof(PersonResponse.DateOfBirth),"Date of Birth" },
-                { nameof(PersonResponse.Gender),"Gender" },
-                { nameof(PersonResponse.Country),"Country Name" },
-                { nameof(PersonResponse.Address),"Address" },
-            };
-
-            List<PersonResponse> list = _personService.GetFilteredList(searchBy, searchString);
+      {
+        { nameof(PersonResponse.PersonName), "Person Name" },
+        { nameof(PersonResponse.Email), "Email" },
+        { nameof(PersonResponse.DateOfBirth), "Date of Birth" },
+        { nameof(PersonResponse.Gender), "Gender" },
+        { nameof(PersonResponse.CountryId), "Country" },
+        { nameof(PersonResponse.Address), "Address" }
+      };
+            List<PersonResponse> persons = _personsService.GetFilteredList(searchBy, searchString);
             ViewBag.CurrentSearchBy = searchBy;
             ViewBag.CurrentSearchString = searchString;
-            #endregion
 
-            #region "Sorting"
-            List<PersonResponse> list2=_personService.GetSortedPersons(list,sortBy, sortOrder);
+            //Sort
+            List<PersonResponse> sortedPersons = _personsService.GetSortedPersons(persons, sortBy, sortOrder);
             ViewBag.CurrentSortBy = sortBy;
-            ViewBag.CurrentSortOrder = sortOrder;
-            #endregion
+            ViewBag.CurrentSortOrder = sortOrder.ToString();
 
-            return View(list2); //Views/Persons/Index.html
+            return View(sortedPersons); //Views/Persons/Index.cshtml
         }
     }
 }
