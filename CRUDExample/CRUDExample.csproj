@@ -7,16 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="SampleDataToSeed\**" />
+    <Content Remove="SampleDataToSeed\**" />
+    <EmbeddedResource Remove="SampleDataToSeed\**" />
+    <None Remove="SampleDataToSeed\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.5" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ServiceContracts\ServiceContracts.csproj" />
     <ProjectReference Include="..\Services\Services.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="SampleDataToSeed\" />
   </ItemGroup>
 
 </Project>
