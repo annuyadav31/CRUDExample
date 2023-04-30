@@ -6,6 +6,7 @@ using Services;
 
 namespace CRUDExample.Controllers
 {
+    [Route("[controller]")]
     public class PersonsController : Controller
     {
         private readonly IPersonService _personsService;
@@ -18,7 +19,7 @@ namespace CRUDExample.Controllers
             _countriesService = countriesService;
         }
 
-        [Route("persons/index")]
+        [Route("[action]")]
         [Route("/")]
         public IActionResult Index(string searchBy, string? searchString, string sortBy = nameof(PersonResponse.PersonName), SortOrderOptions sortOrder = SortOrderOptions.ASC)
         {
@@ -45,7 +46,7 @@ namespace CRUDExample.Controllers
             return View(sortedPersons); //Views/Persons/Index.cshtml
         }
 
-        [Route("persons/create")]
+        [Route("[action]")]
         [HttpGet]
         public IActionResult Create()
         {
@@ -55,8 +56,8 @@ namespace CRUDExample.Controllers
             return View();
         }
 
+        [Route("[action]")]
         [HttpPost]
-        [Route("persons/create")]
         public IActionResult Create(PersonAddRequest personAddRequest)
         {
             if (!ModelState.IsValid)
