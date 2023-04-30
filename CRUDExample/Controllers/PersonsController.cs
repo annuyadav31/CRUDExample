@@ -109,7 +109,7 @@ namespace CRUDExample.Controllers
                 new SelectListItem() { Text = temp.CountryName, Value = temp.CountryId.ToString() });
 
                 ViewBag.Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-                return View();
+                return View(personUpdateRequest);
             }
 
             //Get PersonById 
@@ -126,6 +126,33 @@ namespace CRUDExample.Controllers
             //navigate to Index() action method (it makes another get request to "persons/index"
             return RedirectToAction("Index", "Persons");
         }
+
+        [Route("[action]/{personID}")]
+        [HttpGet]
+        public IActionResult Delete(Guid? personID)
+        {
+            PersonResponse? personResponse = _personsService.GetPersonById(personID);
+            if (personResponse == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            return View(personResponse);
+        }
+
+        [Route("[action]/{personId}")]
+        [HttpPost]
+        public IActionResult Delete(PersonUpdateRequest personUpdateRequest)
+        {
+            if(personUpdateRequest == null)
+            {
+                return View("Index", "Persons");
+            }
+
+            _personsService.DeletePerson(personUpdateRequest.PersonId);
+            return RedirectToAction("Index", "Persons");
+        }
+
 
     }
 }
