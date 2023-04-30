@@ -11,7 +11,7 @@ builder.Services.AddSingleton<ICountriesService, CountriesService>();
 builder.Services.AddSingleton<IPersonService, PersonService>();
 
 //add DbContext File
-builder.Services.AddDbContext<PersonsDbContext>(options=>options.UseSqlServer());
+builder.Services.AddDbContext<PersonsDbContext>(options=>options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString")));
 
 var app = builder.Build();
 
