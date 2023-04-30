@@ -9,9 +9,9 @@ namespace Tests
 
         #region "Constructor"
         //constructor to create CountriesService Object
-        public CountriesServiceTest()
+        public CountriesServiceTest(ICountriesService countriesService)
         {
-            _countriesService = new CountriesService(false);
+            _countriesService = countriesService;
         }
         #endregion
 

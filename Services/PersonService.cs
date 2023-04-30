@@ -5,43 +5,13 @@ namespace Services
 {
     public class PersonService : IPersonService
     {
-        private readonly List<Person> _people;
+        private readonly PersonsDbContext _db;
         private readonly ICountriesService _countriesService;
 
-        public PersonService(bool isInitialize = true)
+        public PersonService(PersonsDbContext personsDbContext, ICountriesService countriesService)
         {
-            _people = new List<Person>();
-            _countriesService = new CountriesService();
-
-            if(isInitialize )
-            {
-                _people.AddRange(new List<Person>() {
-                new Person() {PersonId =  Guid.Parse("F45D9C32-502A-4E2F-86CF-71D3A1D818D8"),PersonName= "Idaline",Address="PO Box 62822",
-                    ReceiveNewsLetters=true,Email="ipadkin0@webnode.com",Gender="Male",DateOfBirth=DateTime.Parse("15/06/2002"),
-                    CountryId= Guid.Parse("EE06A028-565B-4510-A072-76772D17213D")
-                },
-                new Person() { PersonId = Guid.Parse("4A815927-21BB-4C6B-9A96-BB0DFC04B913"),PersonName = "Zorine",Address = "PO Box 56296",
-                    ReceiveNewsLetters = false,Email = "zdenison1@gnu.org",Gender = "Female",DateOfBirth = DateTime.Parse("02/12/2003"),
-                    CountryId = Guid.Parse("A923BCEA-E339-4DA9-A13B-0FF1EBDE8E72")
-                },
-                new Person() { PersonId = Guid.Parse("778C7498-C1B8-4D94-90CF-6351BFA055B6"),PersonName = "Shermy",Address = "1st Floor",
-                    ReceiveNewsLetters = true,Email = "syoslowitz2@mashable.com",Gender = "Male",DateOfBirth = DateTime.Parse("03/07/1995"),
-                    CountryId = Guid.Parse("B00278A7-1F91-4042-B2A6-AA09F7AAD8DE")
-                },
-
-                new Person() {PersonId =  Guid.Parse("FBD09B53-D314-46BB-ABB8-2A5C5D183C97"),PersonName= "Marion",Address= "Suite 1",
-                    ReceiveNewsLetters=true,Email= "mbridgelandh@apache.org",Gender="Female",DateOfBirth=DateTime.Parse("07/11/2009"),
-                    CountryId= Guid.Parse("EE06A028-565B-4510-A072-76772D17213D")
-                },
-                new Person() { PersonId = Guid.Parse("93E59D48-7AC1-48C0-8FD0-D97A81DB0875"),PersonName = "Milena",Address = "Suite 90",
-                    ReceiveNewsLetters = false,Email = "mmccleani@reverbnation.com",Gender = "Female",DateOfBirth = DateTime.Parse("09/03/1998"),
-                    CountryId = Guid.Parse("A923BCEA-E339-4DA9-A13B-0FF1EBDE8E72")
-                },
-                new Person() { PersonId = Guid.Parse("98CACABD-D488-4F98-A664-664D8CBE0B2B"),PersonName = "Vincent",Address = "Apt 694",
-                    ReceiveNewsLetters = true,Email = "vdendlej@technorati.com",Gender = "Male",DateOfBirth = DateTime.Parse("09/01/1996"),
-                    CountryId = Guid.Parse("EE06A028-565B-4510-A072-76772D17213D")
-                }});
-            }
+            _db = personsDbContext;
+            _countriesService = countriesService;
         }
 
         private PersonResponse ConvertPersonToPersonResponse(Person person)
@@ -67,7 +37,8 @@ namespace Services
             person.PersonId = Guid.NewGuid();
 
             //Then add it to List<Person>
-            _people.Add(person);
+            _db.Persons.Add(person);
+            _db.SaveChanges();
             
             //Return PersonResponse Object
             return ConvertPersonToPersonResponse(person);
@@ -75,7 +46,7 @@ namespace Services
 
         public List<PersonResponse> GetAllPersonsList()
         {
-            return _people.Select(temp=>temp.ToPersonResponse()).ToList();
+            return _db.Persons.Select(temp=>temp.ToPersonResponse()).ToList();
         }
 
         public PersonResponse GetPersonById(Guid? personId)
@@ -86,7 +57,7 @@ namespace Services
                 throw new ArgumentException(nameof(personId));
             }
 
-            Person? personResponse = _people.Where(temp=>temp.PersonId == personId).FirstOrDefault();
+            Person? personResponse = _db.Persons.Where(temp=>temp.PersonId == personId).FirstOrDefault();
 
             //If personId is not null but personId doesn't exist
             if (personResponse == null) { return null; }
@@ -173,7 +144,7 @@ namespace Services
             ValidationHelper.ModelValidation(personUpdateRequest);
 
             //find the person in the existing table
-            Person? personDetails =_people.Where(x => x.PersonId == personUpdateRequest.PersonId).FirstOrDefault();
+            Person? personDetails =_db.Persons.Where(x => x.PersonId == personUpdateRequest.PersonId).FirstOrDefault();
 
             //if personDetails are null
             if(personDetails == null)
@@ -190,6 +161,9 @@ namespace Services
             personDetails.Email = personUpdateRequest.Email;
             personDetails.ReceiveNewsLetters = personUpdateRequest.ReceiveNewsLetters;
 
+            //save changes to database
+            _db.SaveChanges();
+
             return personDetails.ToPersonResponse();
 
         }
@@ -201,10 +175,11 @@ namespace Services
                 return false;
             }
 
-            Person? personDetails = _people.Where(x=>x.PersonId == personId).FirstOrDefault();
+            Person? personDetails = _db.Persons.Where(x=>x.PersonId == personId).FirstOrDefault();
             if( personDetails == null) { return false; }
 
-            _people.RemoveAll(x=>x.PersonId == personId);
+            _db.Persons.Remove(personDetails);
+            _db.SaveChanges();
 
             return true;
 

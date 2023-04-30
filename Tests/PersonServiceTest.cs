@@ -10,10 +10,10 @@
         #endregion
 
         #region "Constructor"
-        public PersonServiceTest(ITestOutputHelper testOutputHelper) 
+        public PersonServiceTest(ITestOutputHelper testOutputHelper,ICountriesService countriesService, IPersonService personService) 
         {
-            _personService = new PersonService();
-            _countriesService = new CountriesService(false);
+            _personService = personService;
+            _countriesService = countriesService;
             _testOutputHelper = testOutputHelper;
         }
         #endregion
