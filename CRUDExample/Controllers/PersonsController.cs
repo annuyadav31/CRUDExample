@@ -79,5 +79,53 @@ namespace CRUDExample.Controllers
             return RedirectToAction("Index", "Persons");
         }
 
+        [Route("[action]/{personID}")]
+        [HttpGet]
+        public IActionResult Edit(Guid personID)
+        {
+            PersonResponse personResponse = _personsService.GetPersonById(personID);
+            if(personResponse == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            PersonUpdateRequest personUpdateRequest = personResponse.ToPersonUpdateRequest();
+
+            List<CountryResponse> countries = _countriesService.GetCountryList();
+            ViewBag.Countries = countries.Select(temp =>
+            new SelectListItem() { Text = temp.CountryName, Value = temp.CountryId.ToString() });
+
+            return View(personUpdateRequest);
+        }
+
+        [Route("[action]/{personId}")]
+        [HttpPost]
+        public IActionResult Edit(PersonUpdateRequest personUpdateRequest)
+        {
+            if (!ModelState.IsValid)
+            {
+                List<CountryResponse> countries = _countriesService.GetCountryList();
+                ViewBag.Countries = countries.Select(temp =>
+                new SelectListItem() { Text = temp.CountryName, Value = temp.CountryId.ToString() });
+
+                ViewBag.Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return View();
+            }
+
+            //Get PersonById 
+            PersonResponse? personResponse = _personsService.GetPersonById(personUpdateRequest.PersonId);
+
+            if(personResponse == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            //call the service method
+            PersonResponse personResponse2 = _personsService.UpdatePerson(personUpdateRequest);
+
+            //navigate to Index() action method (it makes another get request to "persons/index"
+            return RedirectToAction("Index", "Persons");
+        }
+
     }
 }

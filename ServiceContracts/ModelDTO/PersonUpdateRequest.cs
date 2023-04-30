@@ -12,9 +12,11 @@
 
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Please enter correct email pattern")]
+        [DataType(DataType.EmailAddress)]
         public string? Email { get; set; }
 
         [Required(ErrorMessage = "DateOfBirth is required")]
+        [DataType(DataType.Date)]
         public DateTime? DateOfBirth { get; set; }
 
         [Required(ErrorMessage = "Gender is required")]
