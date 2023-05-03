@@ -1,4 +1,5 @@
-﻿using ServiceContracts.Enums;
+﻿using Microsoft.EntityFrameworkCore;
+using ServiceContracts.Enums;
 using System.Net.Sockets;
 
 namespace Services
@@ -46,7 +47,8 @@ namespace Services
 
         public List<PersonResponse> GetAllPersonsList()
         {
-            return _db.Persons.Select(temp=>temp.ToPersonResponse()).ToList();
+            var persons = _db.Persons.Include("country").ToList();
+            return persons.Select(temp=>temp.ToPersonResponse()).ToList();
         }
 
         public PersonResponse GetPersonById(Guid? personId)

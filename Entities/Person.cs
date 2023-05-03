@@ -27,5 +27,8 @@
 
         //bit
         public bool ReceiveNewsLetters { get; set; }
+
+        //Country details
+        public Country? country { get; set; }
     }
 }
