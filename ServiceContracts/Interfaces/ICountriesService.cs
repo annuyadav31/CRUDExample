@@ -10,19 +10,19 @@
         /// </summary>
         /// <param name="countryAddRequest">Country object to add</param>
         /// <returns>Returns the country object after adding it.</returns>
-        CountryResponse AddCountry(CountryAddRequest? countryAddRequest);
+        Task<CountryResponse> AddCountry(CountryAddRequest? countryAddRequest);
 
         /// <summary>
         /// Gets the all countries
         /// </summary>
         /// <returns>Returns all the countries present in the list with Guid id</returns>
-        List<CountryResponse> GetCountryList();
+        Task<List<CountryResponse>> GetCountryList();
 
         /// <summary>
         /// Gets the details of a particular country id
         /// </summary>
         /// <param name="countryId"></param>
         /// <returns>Returns the details of a particular id</returns>
-        CountryResponse GetCountryById(Guid? countryId);
+        Task<CountryResponse> GetCountryById(Guid? countryId);
     }
 }

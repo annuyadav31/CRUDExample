@@ -1,4 +1,6 @@
-﻿namespace Services
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Services
 {
     public class CountriesService : ICountriesService
     {
@@ -19,7 +21,7 @@
         /// <returns>Country Response after adding country</returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        public CountryResponse AddCountry(CountryAddRequest? countryAddRequest)
+        public async Task<CountryResponse> AddCountry(CountryAddRequest? countryAddRequest)
         {
 
             //Check if "countryAddRequest" is not null
@@ -35,7 +37,7 @@
             }
 
             //if countryName is duplicate
-            if (_db.Countries.Where(x=>x.CountryName == countryAddRequest.CountryName).Count()>0)
+            if (await _db.Countries.CountAsync(temp=>temp.CountryName == countryAddRequest.CountryName)>0)
             {
                 throw new ArgumentException("CountryName already exists");
             }
@@ -49,30 +51,30 @@
             //Then add it into database
 
             _db.Countries.Add(country);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
 
             //Return CountryResponse object with generated CountryID
             return country.ToCountryResponse();
 
         }
 
-        public CountryResponse GetCountryById(Guid? countryId)
+        public async Task<CountryResponse> GetCountryById(Guid? countryId)
         {
             if(countryId == null)
             {
                 throw new ArgumentException(nameof(countryId));
             }
 
-            Country? countryDetails =  _db.Countries.Where(x => x.CountryId == countryId).FirstOrDefault();
+            Country? countryDetails = await _db.Countries.Where(x => x.CountryId == countryId).FirstOrDefaultAsync();
 
             if (countryDetails == null) { return null; }
 
             return countryDetails.ToCountryResponse();
         }
 
-        public List<CountryResponse> GetCountryList()
+        public async Task<List<CountryResponse>> GetCountryList()
         {
-           return _db.Countries.Select(country=>country.ToCountryResponse()).ToList();
+           return await _db.Countries.Select(country=>country.ToCountryResponse()).ToListAsync();
         }
     }
 }
