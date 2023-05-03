@@ -1,4 +1,6 @@
-﻿namespace Entities
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Entities
 {
     /// <summary>
     /// Person Domain Model Class
@@ -29,6 +31,7 @@
         public bool ReceiveNewsLetters { get; set; }
 
         //Country details
+        [ForeignKey(nameof(CountryId))]
         public Country? country { get; set; }
     }
 }

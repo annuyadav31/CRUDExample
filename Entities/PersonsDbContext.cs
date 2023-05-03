@@ -46,6 +46,12 @@
             //    { modelBuilder.Entity<Person>().HasData(person); }
             //}
 
+            //Table Relations
+            modelBuilder.Entity<Person>(entity =>
+            {
+                entity.HasOne<Country>(c => c.country).WithMany(p => p.Persons).HasForeignKey(p=>p.CountryId);
+            });
+
         }
     }
 }
