@@ -168,11 +168,17 @@ namespace CRUDExample.Controllers
         }
 
         [Route("PersonsCSV")]
-        [HttpGet]
         public async Task<IActionResult> PersonsCSV()
         {
             MemoryStream memoryStream=await _personsService.GetPersonsCSV();
             return File(memoryStream, "application/octet-stream", "persons.csv");
+        }
+
+        [Route("PersonsExcel")]
+        public async Task<IActionResult> PersonsExcel()
+        {
+            MemoryStream memoryStream = await _personsService.GetPersonsExcel();
+            return File(memoryStream, "application/vnd.ms-excel", "persons.xlsx");
         }
 
 
