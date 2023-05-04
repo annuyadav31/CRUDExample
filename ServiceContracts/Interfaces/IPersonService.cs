@@ -55,5 +55,11 @@
         /// <param name="personId">parameter used to delete the person</param>
         /// <returns>returns true or false</returns>
         Task<bool> DeletePerson(Guid? personId);
+
+        /// <summary>
+        /// Returns persons as CSV
+        /// </summary>
+        /// <returns>Returns the memory stream with CSV data</returns>
+        Task<MemoryStream> GetPersonsCSV();
     }
 }

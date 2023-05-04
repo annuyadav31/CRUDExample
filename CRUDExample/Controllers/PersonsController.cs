@@ -153,6 +153,7 @@ namespace CRUDExample.Controllers
             return RedirectToAction("Index", "Persons");
         }
         [Route("PersonsPDF")]
+        [HttpGet]
         public async Task<IActionResult> PersonsPDF()
         {
             //Get the list of persons
@@ -165,6 +166,15 @@ namespace CRUDExample.Controllers
                 PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape
             };
         }
+
+        [Route("PersonsCSV")]
+        [HttpGet]
+        public async Task<IActionResult> PersonsCSV()
+        {
+            MemoryStream memoryStream=await _personsService.GetPersonsCSV();
+            return File(memoryStream, "application/octet-stream", "persons.csv");
+        }
+
 
     }
 }
