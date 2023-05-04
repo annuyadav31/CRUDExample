@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using EntityFrameworkCoreMock;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using ServiceContracts.ModelDTO;
 
@@ -87,12 +88,18 @@ namespace Tests
             //Arrange
             PersonAddRequest? personAddRequest = null;
 
+            //Act
+            Func<Task> action = async () => { await _personService.AddPerson(personAddRequest); };
+
+            //FluentAssertion
+            await action.Should().ThrowAsync<ArgumentNullException>();
+
             //Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(async()=>
-            {
+            //await Assert.ThrowsAsync<ArgumentNullException>(async()=>
+            //{
                 //Act
-                await _personService.AddPerson(personAddRequest);
-            });
+                //await _personService.AddPerson(personAddRequest);
+            //});
         }
 
         //when PersonName in PersonAddRequest Object is null throws ArgumentException
@@ -137,8 +144,12 @@ namespace Tests
             List<PersonResponse> personResponses =await _personService.GetAllPersonsList();
 
             //Assert
-            Assert.True(personResponse_from_add.PersonId != Guid.Empty);
-            Assert.Contains(personResponse_from_add, personResponses);
+            //Assert.True(personResponse_from_add.PersonId != Guid.Empty);
+            //Assert.Contains(personResponse_from_add, personResponses);
+
+            //FluentAssertion
+            personResponse_from_add.PersonId.Should().NotBe(Guid.Empty);
+            personResponses.Should().Contain(personResponse_from_add);
 
             //Writing actual and expected Output
             _testOutputHelper.WriteLine("Actual:");
@@ -161,7 +172,10 @@ namespace Tests
             List<PersonResponse> personResponses =await _personService.GetAllPersonsList();
 
             //Assert
-            Assert.Empty(personResponses);
+            //Assert.Empty(personResponses);
+
+            //FluentAssertion
+            personResponses.Should().BeEmpty();
         }
 
         //When we have added few persons to the list
@@ -209,10 +223,13 @@ namespace Tests
             }
 
             //Assert
-            foreach(PersonResponse expectedResponse in expectedPersonResponses)
-            {
-                Assert.Contains(expectedResponse, actualPersonResponseList);
-            }
+            //foreach(PersonResponse expectedResponse in expectedPersonResponses)
+            //{
+            //    Assert.Contains(expectedResponse, actualPersonResponseList);
+            //}
+
+            //FluentAssertion
+            actualPersonResponseList.Should().BeEquivalentTo(expectedPersonResponses);
         }
         #endregion
 
@@ -245,7 +262,10 @@ namespace Tests
             PersonResponse? personResponse =await _personService.GetPersonById(personId);
 
             //Assert
-            Assert.Null(personResponse);
+            //Assert.Null(personResponse);
+
+            //Fluent Assertion
+            personResponse.Should().BeNull();
         }
 
         //When personIdFound
@@ -498,7 +518,10 @@ namespace Tests
             bool isDeleted =await _personService.DeletePerson(personIdToDelete);
 
             //Assert
-            Assert.True(isDeleted);
+            //Assert.True(isDeleted);
+
+            //Fluent Assertion
+            isDeleted.Should().BeTrue();
         }
 
 
