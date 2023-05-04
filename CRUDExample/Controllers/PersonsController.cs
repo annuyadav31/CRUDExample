@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Rotativa.AspNetCore;
 using ServiceContracts.Enums;
 using ServiceContracts.Interfaces;
 using ServiceContracts.ModelDTO;
-using Services;
 
 namespace CRUDExample.Controllers
 {
@@ -152,7 +152,19 @@ namespace CRUDExample.Controllers
             await _personsService.DeletePerson(personUpdateRequest.PersonId);
             return RedirectToAction("Index", "Persons");
         }
+        [Route("PersonsPDF")]
+        public async Task<IActionResult> PersonsPDF()
+        {
+            //Get the list of persons
+            List<PersonResponse> personResponses = await _personsService.GetAllPersonsList();
 
+            //return view as pf
+            return new ViewAsPdf("PersonsPDF", personResponses, ViewData)
+            {
+                PageMargins = new Rotativa.AspNetCore.Options.Margins() { Top = 20, Right = 20, Bottom = 20, Left = 20 },
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape
+            };
+        }
 
     }
 }
