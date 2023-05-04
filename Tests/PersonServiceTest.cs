@@ -1,4 +1,5 @@
-﻿using EntityFrameworkCoreMock;
+﻿using AutoFixture;
+using EntityFrameworkCoreMock;
 using Microsoft.EntityFrameworkCore;
 
 namespace Tests
@@ -10,6 +11,7 @@ namespace Tests
         private readonly IPersonService _personService;
         private readonly ICountriesService _countriesService;
         private readonly ITestOutputHelper _testOutputHelper;
+        private readonly IFixture _fixture;
         #endregion
 
         #region "Constructor"
@@ -28,9 +30,11 @@ namespace Tests
             dbContextMock.CreateDbSetMock(temp => temp.Countries, countriesInitialData);
             dbContextMock.CreateDbSetMock(temp => temp.Persons, personsInitialData);
 
+            //Initializing the readOnly Fields
             _countriesService = new CountriesService(dbContext);
             _personService = new PersonService(dbContext, _countriesService);
             _testOutputHelper = testOutputHelper;
+            _fixture = new Fixture();
         }
         #endregion
 
@@ -126,16 +130,19 @@ namespace Tests
         public async Task AddPerson_PersonAddRequestIsCorrect()
         {
             //Arrange
-            PersonAddRequest personAddRequest = new PersonAddRequest()
-            {
-                PersonName = "Test",
-                Email = "Test@example.com",
-                DateOfBirth = DateTime.Parse("2000-10-10"),
-                Address = "TestAddress",
-                CountryId = Guid.NewGuid(),
-                Gender = GenderOptions.Male,
-                ReceiveNewsLetters = true
-            };
+            //PersonAddRequest personAddRequest = new PersonAddRequest()
+            //{
+            //    PersonName = "Test",
+            //    Email = "Test@example.com",
+            //    DateOfBirth = DateTime.Parse("2000-10-10"),
+            //    Address = "TestAddress",
+            //    CountryId = Guid.NewGuid(),
+            //    Gender = GenderOptions.Male,
+            //    ReceiveNewsLetters = true
+            //};
+
+            //Arrange using autoFixture
+            PersonAddRequest personAddRequest = _fixture.Build<PersonAddRequest>().With(temp=>temp.Email,"Sample@example.com").Create();
 
             //Act
             PersonResponse personResponse_from_add =await _personService.AddPerson(personAddRequest);
@@ -144,6 +151,15 @@ namespace Tests
             //Assert
             Assert.True(personResponse_from_add.PersonId != Guid.Empty);
             Assert.Contains(personResponse_from_add, personResponses);
+
+            //Writing actual and expected Output
+            _testOutputHelper.WriteLine("Actual:");
+            _testOutputHelper.WriteLine(personResponse_from_add.ToString());
+
+            _testOutputHelper.WriteLine("Expected to be in personResponses:");
+            _testOutputHelper.WriteLine(personResponses[0].ToString());
+
+
         }
         #endregion
 
