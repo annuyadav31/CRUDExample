@@ -1,4 +1,7 @@
-﻿namespace Tests
+﻿using EntityFrameworkCoreMock;
+using Microsoft.EntityFrameworkCore;
+
+namespace Tests
 {
     public class PersonServiceTest
     {
@@ -10,10 +13,23 @@
         #endregion
 
         #region "Constructor"
-        public PersonServiceTest(ITestOutputHelper testOutputHelper,ICountriesService countriesService, IPersonService personService) 
+        public PersonServiceTest(ITestOutputHelper testOutputHelper) 
         {
-            _personService = personService;
-            _countriesService = countriesService;
+            var personsInitialData = new List<Person>() { };
+            var countriesInitialData = new List<Country>() { };
+
+            DbContextMock<ApplicationDbContext> dbContextMock = new DbContextMock<ApplicationDbContext>(
+                new DbContextOptionsBuilder<ApplicationDbContext>().Options
+                );
+
+            ApplicationDbContext dbContext = dbContextMock.Object;
+
+            //Setup
+            dbContextMock.CreateDbSetMock(temp => temp.Countries, countriesInitialData);
+            dbContextMock.CreateDbSetMock(temp => temp.Persons, personsInitialData);
+
+            _countriesService = new CountriesService(dbContext);
+            _personService = new PersonService(dbContext, _countriesService);
             _testOutputHelper = testOutputHelper;
         }
         #endregion
