@@ -25,7 +25,7 @@ namespace Repositories
             return await _db.Countries.ToListAsync();
         }
 
-        public async Task<Country?> GetCountryById(Guid countryID)
+        public async Task<Country?> GetCountryById(Guid? countryID)
         {
             return await _db.Countries.FirstOrDefaultAsync(temp=> temp.CountryId == countryID);
         }

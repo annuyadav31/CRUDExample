@@ -1,17 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RepositoryContracts;
 
 namespace Services
 {
     public class CountriesService : ICountriesService
     {
         //private readonly
-        private readonly ApplicationDbContext _db;
+        private readonly ICountriesRepository _countriesRepository;
 
         //constructor
-        public CountriesService(ApplicationDbContext personsDbContext)
+        public CountriesService(ICountriesRepository countriesRepository)
         {
 
-            _db = personsDbContext;   
+            _countriesRepository = countriesRepository;  
         }
 
         /// <summary>
@@ -37,7 +38,7 @@ namespace Services
             }
 
             //if countryName is duplicate
-            if (await _db.Countries.CountAsync(temp=>temp.CountryName == countryAddRequest.CountryName)>0)
+            if (await _countriesRepository.GetCountryByName(countryAddRequest.CountryName)!= null)
             {
                 throw new ArgumentException("CountryName already exists");
             }
@@ -50,8 +51,7 @@ namespace Services
 
             //Then add it into database
 
-            _db.Countries.Add(country);
-            await _db.SaveChangesAsync();
+            await _countriesRepository.AddCountry(country);
 
             //Return CountryResponse object with generated CountryID
             return country.ToCountryResponse();
@@ -65,7 +65,7 @@ namespace Services
                 throw new ArgumentException(nameof(countryId));
             }
 
-            Country? countryDetails = await _db.Countries.Where(x => x.CountryId == countryId).FirstOrDefaultAsync();
+            Country? countryDetails = await _countriesRepository.GetCountryById(countryId);
 
             if (countryDetails == null) { return null; }
 
@@ -74,7 +74,7 @@ namespace Services
 
         public async Task<List<CountryResponse>> GetCountryList()
         {
-           return await _db.Countries.Select(country=>country.ToCountryResponse()).ToListAsync();
+           return (await _countriesRepository.GetAllCountries()).Select(country=>country.ToCountryResponse()).ToList();
         }
     }
 }

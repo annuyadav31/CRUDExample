@@ -1,6 +1,7 @@
 ﻿using CsvHelper;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
+using RepositoryContracts;
 using ServiceContracts.Enums;
 using System.Globalization;
 using System.Net.Sockets;
@@ -9,13 +10,11 @@ namespace Services
 {
     public class PersonService : IPersonService
     {
-        private readonly ApplicationDbContext _db;
-        private readonly ICountriesService _countriesService;
+        private readonly IPersonsRepository _personsRepository;
 
-        public PersonService(ApplicationDbContext personsDbContext, ICountriesService countriesService)
+        public PersonService(IPersonsRepository personsRepository)
         {
-            _db = personsDbContext;
-            _countriesService = countriesService;
+            _personsRepository = personsRepository;
         }
 
         private PersonResponse ConvertPersonToPersonResponse(Person person)
@@ -40,8 +39,7 @@ namespace Services
             person.PersonId = Guid.NewGuid();
 
             //Then add it to List<Person>
-            _db.Persons.Add(person);
-            await _db.SaveChangesAsync();
+            await _personsRepository.AddPerson(person);
             
             //Return PersonResponse Object
             return ConvertPersonToPersonResponse(person);
@@ -49,7 +47,7 @@ namespace Services
 
         public async Task<List<PersonResponse>> GetAllPersonsList()
         {
-            var persons = await _db.Persons.Include("country").ToListAsync();
+            var persons = await _personsRepository.GetAllPersons();
             return persons.Select(temp=>temp.ToPersonResponse()).ToList();
         }
 
@@ -61,7 +59,7 @@ namespace Services
                 throw new ArgumentException(nameof(personId));
             }
 
-            Person? personResponse = await _db.Persons.Where(temp=>temp.PersonId == personId).FirstOrDefaultAsync();
+            Person? personResponse = await _personsRepository.GetPersonByPersonId(personId);
 
             //If personId is not null but personId doesn't exist
             if (personResponse == null) { return null; }
@@ -148,7 +146,7 @@ namespace Services
             ValidationHelper.ModelValidation(personUpdateRequest);
 
             //find the person in the existing table
-            Person? personDetails = await _db.Persons.Where(x => x.PersonId == personUpdateRequest.PersonId).FirstOrDefaultAsync();
+            Person? personDetails = await _personsRepository.GetPersonByPersonId(personUpdateRequest.PersonId);
 
             //if personDetails are null
             if(personDetails == null)
@@ -156,17 +154,8 @@ namespace Services
                 throw new ArgumentException("personId doesn't exist");
             }
 
-            //update all details
-            personDetails.PersonName = personUpdateRequest.PersonName;
-            personDetails.Address = personUpdateRequest.Address;
-            personDetails.Gender = personUpdateRequest.Gender.ToString();
-            personDetails.CountryId = personUpdateRequest.CountryId;
-            personDetails.DateOfBirth = personUpdateRequest.DateOfBirth;
-            personDetails.Email = personUpdateRequest.Email;
-            personDetails.ReceiveNewsLetters = personUpdateRequest.ReceiveNewsLetters;
-
             //save changes to database
-            await _db.SaveChangesAsync();
+            await _personsRepository.UpdatePerson(personUpdateRequest.ToPerson());
 
             return personDetails.ToPersonResponse();
 
@@ -174,18 +163,12 @@ namespace Services
 
         public async Task<bool> DeletePerson(Guid? personId)
         {
-            if(personId == null)
+            bool result = false;
+            if (personId != null)
             {
-                return false;
+                 result = await _personsRepository.DeletePersonByPersonId(personId);
             }
-
-            Person? personDetails = await _db.Persons.Where(x=>x.PersonId == personId).FirstOrDefaultAsync();
-            if( personDetails == null) { return false; }
-
-            _db.Persons.Remove(personDetails);
-            await _db.SaveChangesAsync();
-
-            return true;
+            return result;
 
         }
 

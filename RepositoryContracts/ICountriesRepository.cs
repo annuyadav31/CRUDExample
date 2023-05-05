@@ -13,7 +13,7 @@ namespace RepositoryContracts
 
         Task<List<Country>> GetAllCountries();
 
-        Task<Country?> GetCountryById(Guid countryID);
+        Task<Country?> GetCountryById(Guid? countryID);
 
         Task<Country?> GetCountryByName(string countryName);
     }

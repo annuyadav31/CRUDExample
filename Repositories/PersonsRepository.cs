@@ -27,7 +27,7 @@ namespace Repositories
             return person;
         }
 
-        public async Task<bool> DeletePersonByPersonId(Guid personID)
+        public async Task<bool> DeletePersonByPersonId(Guid? personID)
         {
             Person? person =await _db.Persons.FirstOrDefaultAsync(temp=>temp.PersonId == personID);
             if (person != null)
@@ -49,7 +49,7 @@ namespace Repositories
             return await _db.Persons.Include("country").Where(predicate).ToListAsync();
         }
 
-        public async Task<Person?> GetPersonByPersonId(Guid personID)
+        public async Task<Person?> GetPersonByPersonId(Guid? personID)
         {
             return await _db.Persons.FirstOrDefaultAsync(temp => temp.PersonId == personID);
         }
