@@ -2,6 +2,8 @@
 using EntityFrameworkCoreMock;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Moq;
+using RepositoryContracts;
 using ServiceContracts.ModelDTO;
 
 namespace Tests
@@ -12,6 +14,8 @@ namespace Tests
         //private readonly variable for Service Interface
         private readonly IPersonService _personService;
         private readonly ICountriesService _countriesService;
+        private readonly Mock<IPersonsRepository> _personRepositoryMock;
+        private readonly IPersonsRepository _personsRepository;
         private readonly ITestOutputHelper _testOutputHelper;
         private readonly IFixture _fixture;
         #endregion
@@ -19,6 +23,9 @@ namespace Tests
         #region "Constructor"
         public PersonServiceTest(ITestOutputHelper testOutputHelper) 
         {
+            _personRepositoryMock = new Mock<IPersonsRepository>();
+            _personsRepository = _personRepositoryMock.Object;
+
             var personsInitialData = new List<Person>() { };
             var countriesInitialData = new List<Country>() { };
 
@@ -33,8 +40,8 @@ namespace Tests
             dbContextMock.CreateDbSetMock(temp => temp.Persons, personsInitialData);
 
             //Initializing the readOnly Fields
-            _countriesService = new CountriesService(dbContext);
-            _personService = new PersonService(dbContext, _countriesService);
+            _countriesService = new CountriesService(null);
+            _personService = new PersonService(_personsRepository);
             _testOutputHelper = testOutputHelper;
             _fixture = new Fixture();
         }
@@ -122,41 +129,30 @@ namespace Tests
 
         //when PersonAddRequest Object is correct return PersonResponse
         [Fact]
-        public async Task AddPerson_PersonAddRequestIsCorrect()
+        public async Task AddPerson_PersonAddRequestIsCorrect_ToBeSuccessful()
         {
-            //Arrange
-            //PersonAddRequest personAddRequest = new PersonAddRequest()
-            //{
-            //    PersonName = "Test",
-            //    Email = "Test@example.com",
-            //    DateOfBirth = DateTime.Parse("2000-10-10"),
-            //    Address = "TestAddress",
-            //    CountryId = Guid.NewGuid(),
-            //    Gender = GenderOptions.Male,
-            //    ReceiveNewsLetters = true
-            //};
 
             //Arrange using autoFixture
             PersonAddRequest personAddRequest = _fixture.Build<PersonAddRequest>().With(temp=>temp.Email,"Sample@example.com").Create();
 
+            PersonResponse personResponse_expected = personAddRequest.ToPerson().ToPersonResponse();
+
+            _personRepositoryMock.Setup(temp=>temp.AddPerson(It.IsAny<Person>())).ReturnsAsync(personAddRequest.ToPerson());
+
             //Act
             PersonResponse personResponse_from_add =await _personService.AddPerson(personAddRequest);
-            List<PersonResponse> personResponses =await _personService.GetAllPersonsList();
-
-            //Assert
-            //Assert.True(personResponse_from_add.PersonId != Guid.Empty);
-            //Assert.Contains(personResponse_from_add, personResponses);
+            personResponse_expected.PersonId = personResponse_from_add.PersonId;
 
             //FluentAssertion
             personResponse_from_add.PersonId.Should().NotBe(Guid.Empty);
-            personResponses.Should().Contain(personResponse_from_add);
+            personResponse_from_add.Should().Be(personResponse_expected);
 
             //Writing actual and expected Output
             _testOutputHelper.WriteLine("Actual:");
             _testOutputHelper.WriteLine(personResponse_from_add.ToString());
 
             _testOutputHelper.WriteLine("Expected to be in personResponses:");
-            _testOutputHelper.WriteLine(personResponses[0].ToString());
+            _testOutputHelper.WriteLine(personResponse_expected.ToString());
 
 
         }

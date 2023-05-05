@@ -180,7 +180,7 @@ namespace Services
             csvWriter.WriteHeader<PersonResponse>();
             csvWriter.NextRecord();
 
-            List<PersonResponse> personResponses = await _db.Persons.Include("country").Select(temp=>temp.ToPersonResponse()).ToListAsync();
+            List<PersonResponse> personResponses = (await _personsRepository.GetAllPersons()).Select(temp=>temp.ToPersonResponse()).ToList();
 
             await csvWriter.WriteRecordsAsync(personResponses);
 
@@ -211,7 +211,7 @@ namespace Services
                 }
 
                 int row = 2;
-                List<PersonResponse> persons = _db.Persons.Include("country").Select(temp => temp.ToPersonResponse()).ToList();
+                List<PersonResponse> persons = (await _personsRepository.GetAllPersons()).Select(temp => temp.ToPersonResponse()).ToList();
 
                 foreach (PersonResponse person in persons)
                 {
